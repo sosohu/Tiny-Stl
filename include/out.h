@@ -24,7 +24,9 @@ void qWarning(std::string msg = ""){
 }
 
 void qDebug(std::string msg = ""){
+#ifdef DEBUG
 	cout<<msg<<endl;
+#endif
 }
 
 #endif

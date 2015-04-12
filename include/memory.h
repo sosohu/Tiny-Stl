@@ -38,6 +38,13 @@ inline void _destroy(T* p){
 	qDebug("_destroy");
 }
 
+template<typename T, typename U>
+void uninitialized_fill_n(T* begin, size_t n, const U& x){
+	for(auto i = 0; i < n; i++){
+		*begin++ = x;
+	}
+}
+
 }
 
 #endif

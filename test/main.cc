@@ -1,11 +1,11 @@
 #include "../include/alloc.h"
+#include "../include/vector.h"
 #include <iostream>
 #include <vector>
 
-using namespace std;
 
 int main(){
-	vector<int, hu::allocator<int> > vec{0,1,2,3,4};
-	for(auto ele : vec)
-		cout<<ele<<endl;
+	hu::vector<int> vec(5,1);
+	for(auto i = 0; i < vec.size(); i++)
+		cout<<vec[i]<<endl;
 }
