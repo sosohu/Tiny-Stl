@@ -166,8 +166,16 @@ char* junior_allocator<inst>::chunk_alloc(size_t node_id, size_t &n){
 			start = (char*)(::operator new(add_size));
 			if(start == 0){
 				//分配内存失败
-				//TODO 应该从合适的free_list中回收一定的内存
-
+				//应该从合适的free_list中回收一定的内存
+				for(size_t i = node_id + 1; i < FREE_COUNT; i++){
+					if(free_list[i] != 0){
+						result = (char*)(free_list[i]);
+						free_list[i]= free_list[i]->next;
+						start = result;
+						finish = start + node_size(i);
+						return chunk_alloc(node_id, n);//再次尝试分配
+					}
+				}
 
 				//实在不行调用一级空间适配器以调用用户定义的处理历程
 				start = (char*)(superior_allocator<inst>::allocate(add_size));
