@@ -1,7 +1,8 @@
 #ifndef __MEMORY__H__
 #define __MEMORY__H__
 /*
-本文件主要实现负责最底层的memory相关工作的函数实现，比如_allocate, _deallocate, uninitialized_copy等等
+ * 本文件主要实现负责最底层的memory相关工作的函数实现
+ * 比如_allocate, _deallocate, _construct, _destroy等等
 */
 
 #include "ctype.h"
@@ -38,12 +39,14 @@ inline void _destroy(T* p){
 	qDebug("_destroy");
 }
 
+/*
 template<typename T, typename U>
 void uninitialized_fill_n(T* begin, size_t n, const U& x){
 	for(auto i = 0; i < n; i++){
 		*begin++ = x;
 	}
 }
+*/
 
 }
 

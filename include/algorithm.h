@@ -1,5 +1,8 @@
 #ifndef __ALGORITHM__H__
 #define __ALGORITHM__H__
+/*
+ * 实现简单的STL部分算法
+ */
 
 #include "iterator.h"
 

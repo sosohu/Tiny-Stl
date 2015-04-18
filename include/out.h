@@ -1,5 +1,5 @@
 #ifndef __OUT__H__
-#define __OUT__H_
+#define __OUT__H__
 
 /*
 本文件主要实现输出相关东西，比如error输出，warning输出等.

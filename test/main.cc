@@ -3,12 +3,12 @@
 #include "../include/algorithm.h"
 #include <iostream>
 #include <vector>
+#include <algorithm>
 
 
 int main(){
-	hu::vector<int> vec(5,1);
+	int data[] = {1,9,9,1,1,0,0,9};
+	hu::vector<int> vec(std::begin(data), std::end(data));
 	for(auto i = 0; i < vec.size(); i++)
 		cout<<vec[i]<<endl;
-	int data[] = {1,2,3,4,5};
-	cout<<"distance: "<<hu::distance(&data[0], &data[4])<<endl;
 }

@@ -45,7 +45,7 @@ void* superior_allocator<inst>::allocate(size_t n){
 template<int inst>
 void* superior_allocator<inst>::oom_allocate(size_t n){
 	if(allocate_failed_handler == 0)
-		throw hu::THROW_BAD_ALLOC;
+		THROW_BAD_ALLOC;
 	void* result = 0;
 	while(result == 0){
 		allocate_failed_handler(); //调用处理例程，试图释放一些内存
@@ -73,7 +73,7 @@ template<int inst>
 void* superior_allocator<inst>::oom_reallocate(void* ptr,
 								size_t old_sz, size_t new_sz){
 	if(allocate_failed_handler == 0)
-		throw THROW_BAD_ALLOC;
+		THROW_BAD_ALLOC;
 	void *result = 0;
 	while(result == 0){
 		allocate_failed_handler();

@@ -1,5 +1,8 @@
 #ifndef __ITERATOR__H__
 #define __ITERATOR__H__
+/*
+ * iterator常用型别定义以及萃取等实现
+ */
 
 #include <cstdlib>
 
@@ -55,7 +58,10 @@ class traits_iterator<const T*>{
 	typedef random_access_iterator_tag iterator_category;
 };
 
-//求迭代器的value_type*
+/*求迭代器的value_type*,之所以用value_type*而不是value_type是因为这个函数
+ * 通常用来确定迭代器维护的类的类型（比如unintialized_copy函数），所以具体类型的对象
+ * 无所谓，传指针就可以满足这个需求，而且拷贝的字节数也只有４字节
+ * */
 template<typename Iter>
 typename traits_iterator<Iter>::value_type* value_type(const Iter&){
 	//函数模板的参数只作为确定参数，不参与实际计算
