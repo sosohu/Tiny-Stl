@@ -55,6 +55,21 @@ struct traits_type<double>{
  * unsigned int, unsigned char, ......
  */
 
+
+
+struct Not_Int{	};
+struct Is_Int{};
+
+template<typename T>
+struct traits_int{
+	typedef Not_Int is_int;
+};
+
+template<>
+struct traits_int<int>{
+	typedef Is_Int is_int;
+};
+
 }
 
 #endif

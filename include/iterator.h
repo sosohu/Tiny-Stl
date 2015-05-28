@@ -28,7 +28,7 @@ struct iterator{
 	typedef Difference difference_type;
 };
 
-//类型萃取器
+//迭代器萃取器
 template<typename T>
 class traits_iterator{
 	typedef typename T::value_type value_type;

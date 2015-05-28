@@ -52,7 +52,7 @@ public:
 		if(capacity() < n){
 			reserve(n);
 		}else{
-			finish = begin + n;
+			finish = start + n;
 		}
 	}
 	void reserve(size_type n){
@@ -75,14 +75,14 @@ public:
 	value_type back() const;
 
 	//修改函数
+	void assign(size_type n, const_reference value);
 	template<typename InputIterator>
 	void assign(InputIterator begin, InputIterator end);
 
-	void assign(size_type n, const_reference value);
 	void push_back(const const_reference value);
 	void pop_back();
 
-	template<typename InputIterator>
+	template<typename InputIterator>//pos之前插入
 	void insert(iterator pos, InputIterator begin, InputIterator end);
 
 	iterator insert(iterator pos, const_reference value);
@@ -91,9 +91,15 @@ public:
 	iterator erase(iterator pos);
 	iterator erase(iterator begin, iterator end);
 
-	void swap(vector<T, Alloc> rhs);
+	void swap(vector<T, Alloc> &rhs);
 	void clear();
 
+private:
+	template<typename InputIterator>
+	void assign_aux(InputIterator begin, InputIterator end, Is_Int);
+
+	template<typename InputIterator>
+	void assign_aux(InputIterator begin, InputIterator end, Not_Int);
 
 private:
 	iterator start;
@@ -168,6 +174,114 @@ typename vector<T,Alloc>::value_type vector<T, Alloc>::back() const{
 	if(empty())	THROW_OUT_OF_RANGE;
 	return *(finish - 1);
 }
+
+template<typename T, typename Alloc>
+void vector<T, Alloc>::assign(size_type n, const_reference value){
+	resize(n);
+	clear();
+	uninitialized_fill_n(start, n, value);
+	finish = start + n;
+}
+
+template<typename T, typename Alloc>
+template<typename InputIterator>
+void vector<T,Alloc>::assign_aux(InputIterator begin, InputIterator end, Is_Int){
+	assign(size_type(begin), end);
+}
+
+template<typename T, typename Alloc>
+template<typename InputIterator>
+void vector<T,Alloc>::assign_aux(InputIterator begin, InputIterator end, Not_Int){
+	size_type dis = distance(begin, end);
+	resize(dis);
+	clear();
+	uninitialized_copy(begin, end, start);
+	finish = start + dis;
+}
+
+template<typename T, typename Alloc>
+template<typename InputIterator>
+void vector<T, Alloc>::assign(InputIterator begin, InputIterator end){
+	//需要判断InputIterator是否为Integer,也采用traits技术
+	typedef typename traits_int<InputIterator>::is_int Judge;
+	assign_aux(begin, end, Judge());
+}
+
+template<typename T, typename Alloc>
+void vector<T, Alloc>::push_back(const const_reference value){
+	if(finish == end_of_storage){
+		size_type old_sz = size();
+		size_type new_sz = old_sz == 0? 1 : 2*old_sz;
+		resize(new_sz);
+	}
+	_construct(&*finish, value);
+	finish++;
+}
+
+template<typename T, typename Alloc>
+void vector<T, Alloc>::pop_back(){
+	if(empty())
+		THROW_OUT_OF_RANGE;
+	finish--;
+}
+
+template<typename T, typename Alloc>
+template<typename InputIterator>
+void vector<T, Alloc>::insert(iterator pos, InputIterator begin, InputIterator end){
+	size_type dif = distance(start, pos);
+	size_type dis = distance(begin, end);
+	reserve(dis + size());
+	pos = start + dif;
+	//TODO
+	_copy_backward(pos, finish, pos + dis);
+	uninitialized_copy(begin, end, pos);
+	finish = finish + dis;
+}
+
+template<typename T, typename Alloc>
+typename vector<T, Alloc>::iterator vector<T, Alloc>::insert(iterator pos, const_reference value){
+	return insert(pos, 1, value);
+}
+
+template<typename T, typename Alloc>
+void vector<T, Alloc>::insert(iterator pos, size_type n, const_reference value){
+	size_type dif = distance(start, pos);
+	reserve(size() + n);
+	pos = start + dif;
+	//TODO
+	_copy_backward(pos, finish, pos + n);
+	uninitialized_fill_n(pos, n , value);
+	finish = finish + n;
+	//return pos;
+}
+
+
+template<typename T, typename Alloc>
+typename vector<T, Alloc>::iterator vector<T, Alloc>::erase(iterator pos){
+	return erase(pos, pos+1);
+}
+
+template<typename T, typename Alloc>
+typename vector<T,Alloc>::iterator vector<T, Alloc>::erase(iterator begin, iterator end){
+	iterator pos;
+	//TODO
+	_copy_forward(end, finish, begin);
+	finish = finish - (end - begin);
+	return pos;
+}
+
+template<typename T, typename Alloc>
+void vector<T, Alloc>::swap(vector<T, Alloc> &rhs){
+	std::swap(start, rhs.start);
+	std::swap(finish, rhs.finish);
+	std::swap(end_of_storage, rhs.end_of_storage);
+}
+
+template<typename T, typename Alloc>
+void vector<T, Alloc>::clear(){
+	finish = start;
+}
+
 
 
 }

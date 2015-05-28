@@ -20,7 +20,6 @@ _distance(InputIterator iter1, InputIterator iter2,
 	return d;
 }
 
-//偏特化
 template<typename InputIterator>
 typename traits_iterator<InputIterator>::difference_type
 _distance(InputIterator iter1, InputIterator iter2,

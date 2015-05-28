@@ -142,6 +142,26 @@ ForwardIterator uninitialized_fill_n(ForwardIterator begin, Size n,
 	return _uninitialized_fill_n(begin, n, value, value_type(begin));
 }
 
+/*
+ * [begin, end) -> [result, result + end - begin)
+ */
+template<typename ForwardIterator>
+void _copy_backward(ForwardIterator begin, ForwardIterator end, ForwardIterator result){
+	ForwardIterator tail = result + distance(begin, end);
+	while(tail != result){
+		*--tail = *--end;
+	}
+}
+
+/*
+ * [begin, end) -> [result, result + end - begin)
+ */
+template<typename ForwardIterator>
+void _copy_forward(ForwardIterator begin, ForwardIterator end, ForwardIterator result){
+	while(begin != end){
+		*result++ = *begin++;
+	}
+}
 
 }
 #endif
