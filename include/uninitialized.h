@@ -112,6 +112,7 @@ ForwardIterator _uninitialized_fill_n_aux(ForwardIterator begin, Size n,
 	qDebug("std::fill_n");
 	//TODO
 	std::fill_n(begin, n, value);
+	return begin;
 }
 
 template<typename ForwardIterator, typename Size, typename T>

@@ -96,10 +96,22 @@ public:
 
 private:
 	template<typename InputIterator>
+	void vector_aux(InputIterator begin, InputIterator end, Is_Int);
+
+	template<typename InputIterator>
+	void vector_aux(InputIterator begin, InputIterator end, Not_Int);
+
+	template<typename InputIterator>
 	void assign_aux(InputIterator begin, InputIterator end, Is_Int);
 
 	template<typename InputIterator>
 	void assign_aux(InputIterator begin, InputIterator end, Not_Int);
+
+	template<typename InputIterator>
+	void insert_aux(iterator pos, InputIterator begin, InputIterator end, Is_Int);
+
+	template<typename InputIterator>
+	void insert_aux(iterator pos, InputIterator begin, InputIterator end, Not_Int);
 
 private:
 	iterator start;
@@ -127,6 +139,7 @@ vector<T,Alloc>::vector(size_type n){
 template<typename T, typename Alloc>
 vector<T, Alloc>::vector(size_type n, const_reference x){
 	start = data_alloc::allocate(n);
+	cout<<n<<","<<x<<","<<start<<endl;
 	uninitialized_fill_n(start, n, x);
 	finish = start + n;
 	end_of_storage = finish;
@@ -134,12 +147,30 @@ vector<T, Alloc>::vector(size_type n, const_reference x){
 
 template<typename T, typename Alloc>
 template<typename InputIterator>
-vector<T,Alloc>::vector(InputIterator begin, InputIterator end){
+void vector<T,Alloc>::vector_aux(InputIterator begin, InputIterator end, Is_Int){
+	size_type n = static_cast<size_type>(begin);
+	value_type x = static_cast<value_type>(end);
+	start = data_alloc::allocate(n);
+	uninitialized_fill_n(start, n, x);
+	finish = start + n;
+	end_of_storage = finish;
+}
+
+template<typename T, typename Alloc>
+template<typename InputIterator>
+void vector<T,Alloc>::vector_aux(InputIterator begin, InputIterator end, Not_Int){
 	difference_type n = distance(begin, end);
 	start = data_alloc::allocate(n);
 	uninitialized_copy(begin, end, start);
 	finish = start + n;
 	end_of_storage = finish;
+}
+
+template<typename T, typename Alloc>
+template<typename InputIterator>
+vector<T,Alloc>::vector(InputIterator begin, InputIterator end){
+	typedef typename traits_int<InputIterator>::is_int Judge;
+	vector_aux(begin, end, Judge());
 }
 
 template<typename T, typename Alloc>
@@ -227,7 +258,13 @@ void vector<T, Alloc>::pop_back(){
 
 template<typename T, typename Alloc>
 template<typename InputIterator>
-void vector<T, Alloc>::insert(iterator pos, InputIterator begin, InputIterator end){
+void vector<T, Alloc>::insert_aux(iterator pos, InputIterator begin, InputIterator end, Is_Int){
+	insert(pos, static_cast<size_type>(begin), static_cast<value_type>(end));
+}
+
+template<typename T, typename Alloc>
+template<typename InputIterator>
+void vector<T, Alloc>::insert_aux(iterator pos, InputIterator begin, InputIterator end, Not_Int){
 	size_type dif = distance(start, pos);
 	size_type dis = distance(begin, end);
 	reserve(dis + size());
@@ -236,6 +273,13 @@ void vector<T, Alloc>::insert(iterator pos, InputIterator begin, InputIterator e
 	_copy_backward(pos, finish, pos + dis);
 	uninitialized_copy(begin, end, pos);
 	finish = finish + dis;
+}
+
+template<typename T, typename Alloc>
+template<typename InputIterator>
+void vector<T, Alloc>::insert(iterator pos, InputIterator begin, InputIterator end){
+	typedef typename traits_int<InputIterator>::is_int Judge;
+	insert_aux(pos, begin, end, Judge());
 }
 
 template<typename T, typename Alloc>
