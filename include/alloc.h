@@ -235,8 +235,10 @@ void* junior_allocator<inst>::reallocte(void* ptr, size_t old_sz, size_t new_sz)
 
 template<int inst>
 void junior_allocator<inst>::deallocate(void* ptr, size_t sz){
-	if(sz > LARGE_SIZE)
+	if(sz > LARGE_SIZE){
 		superior_allocator<inst>::deallocate(ptr, sz);
+		return;
+	}
 	size_t node_march = march_node(sz);
 	obj* pos = (obj*)ptr;
 	pos->next = free_list[node_march];
