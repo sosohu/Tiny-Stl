@@ -140,7 +140,7 @@ template<typename T, typename Alloc>
 vector<T, Alloc>::vector(size_type n, const_reference x){
 	start = data_alloc::allocate(n);
 	cout<<n<<","<<x<<","<<start<<endl;
-	uninitialized_fill_n(start, n, x);
+	hu::uninitialized_fill_n(start, n, x);
 	finish = start + n;
 	end_of_storage = finish;
 }

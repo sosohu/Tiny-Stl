@@ -90,6 +90,16 @@ struct extract_key_single{
 	}
 };
 
+/*
+ * assume the Value type is a pair, and the first type of the pair is Key
+ */
+template<typename Key, typename Value>
+struct extract_key_pair{
+	Key operator()(const Value value)	const{
+		return value.first;
+	}
+};
+
 }
 
 

@@ -44,10 +44,10 @@ public:
 	iterator begin()	{	return ht.begin();	}
 	iterator end()	{	return ht.end();	}
 
-	size_type count(const Value_type key)	{	return ht.count(key);	}
-	iterator find(const Value_type key){	return ht.find(key);	}
+	size_type count(const Key_type key)	{	return ht.count(key);	}
+	iterator find(const Key_type key){	return ht.find(key);	}
 
-	void insert(const Key_type key)	{	ht.insert_unique(key); }
+	void insert(const Value_type key)	{	ht.insert_unique(key); }
 	void erase(const Key_type key)	{	ht.erase(key);	}
 	void erase(iterator iter)	{	ht.erase(iter);	}
 	void clear()	{	ht.clear();	}

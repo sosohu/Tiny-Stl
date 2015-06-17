@@ -145,12 +145,12 @@ public:
 	}
 	iterator end() const { return finish; }
 
-	size_type count(const Value_type &vale);
-	iterator find(const Value_type &vale);
+	size_type count(const Key_type &vale);
+	iterator find(const Key_type &vale);
 	void insert_equal(const Value_type value);
 	void insert_unique(const Value_type value);
 	void erase(iterator iter);
-	void erase(const Value_type value);
+	void erase(const Key_type key);
 	void clear();
 	void swap(hash_table_type &rhs);
 
@@ -170,11 +170,11 @@ private:
 
 template<typename Key, typename Value, typename HashFunc, typename ExtractKey, typename Equal, typename Alloc>
 typename hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::size_type
-hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::count(const Value_type &val){
-	hash_node_type *pCur = buckets[hash_func(get_key(val)) % getBucketSize()];
+hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::count(const Key_type &key){
+	hash_node_type *pCur = buckets[hash_func(key) % getBucketSize()];
 	size_type num = 0;
 	while(pCur){
-		if(equal(pCur->val, val ))	num++;
+		if(equal(get_key(pCur->val), key))	num++;
 		pCur = pCur->next;
 	}
 	return num;
@@ -182,10 +182,10 @@ hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::count(const Value_ty
 
 template<typename Key, typename Value, typename HashFunc, typename ExtractKey, typename Equal, typename Alloc>
 typename hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::iterator
-hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::find(const Value_type &val){
-	hash_node_type *pCur = buckets[hash_func(get_key(val)) % getBucketSize()];
+hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::find(const Key_type &val){
+	hash_node_type *pCur = buckets[hash_func(val) % getBucketSize()];
 	while(pCur){
-		if(equal(pCur->val, val )){
+		if(equal(get_key(pCur->val), val )){
 			return iterator(pCur, this);
 		}
 		pCur = pCur->next;
@@ -226,7 +226,11 @@ void hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::resize(const si
 
 template<typename Key, typename Value, typename HashFunc, typename ExtractKey, typename Equal, typename Alloc>
 void hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::insert_unique(const Value_type value){
-	if(count(value))	return;
+	if(count(get_key(value))){
+		//remove the older value
+		*find(get_key(value)) = value;
+		return;
+	}
 	insert_equal(value);
 }
 
@@ -248,20 +252,20 @@ void hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::insert_equal(co
 
 // erase all the same Value
 template<typename Key, typename Value, typename HashFunc, typename ExtractKey, typename Equal, typename Alloc>
-void hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::erase(const Value_type value){
-	hash_node_type *pHead = buckets[hash_func(get_key(value)) % getBucketSize()];
-	hash_node_type *pCur = pHead, pNext = NULL;
+void hash_table<Key, Value, HashFunc, ExtractKey, Equal, Alloc>::erase(const Key_type key){
+	hash_node_type *pHead = buckets[hash_func(key) % getBucketSize()];
+	hash_node_type *pCur = pHead, *pNext = NULL;
 	if(!pCur)	return;
 	while(pCur->next){
-		if(equal(pCur->next->val, value)){
+		if(equal(get_key(pCur->next->val), key)){
 			pNext = pCur->next;
 			pCur->next = pNext->next;
 			_destroy(pNext);
 			num_element--;
 		}
 	}
-	if(equal(pHead->val, value)){
-		buckets[hash_func(get_key(value)) % getBucketSize()] = pHead->next;
+	if(equal(get_key(pHead->val), key)){
+		buckets[hash_func(key) % getBucketSize()] = pHead->next;
 		_destroy(pHead);
 		num_element--;
 	}
