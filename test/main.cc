@@ -74,6 +74,7 @@ void hash_map_test(){
 	for(auto iter = table.begin(); iter != table.end(); iter++)
 		cout<<iter->first<<","<<iter->second<<endl;
 	cout<<table.load_factor()<<endl;
+	table.clear();
 	int data1[] = {1,2,3,4,1,2,0,7};
 	auto res = TwoSum(data1, sizeof(data1) / sizeof(int), 9);
 	for(auto iter = res.begin(); iter != res.end(); iter++)
